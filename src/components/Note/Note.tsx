@@ -64,10 +64,11 @@ const Note: React.FC<IProps> = ({
       if (event.cancelable) {
         event.preventDefault();
         event.stopPropagation();
+
         /* moving the note is done by calculating the movement of the cursor */
         /* probably not the best solution. */
-        setPositionX((position) => position + event.movementX);
-        setPositionY((position) => position + event.movementY);
+        setPositionX((positionX) => positionX + event.movementX);
+        setPositionY((positionY) => positionY + event.movementY);
       }
     }
   }, []);
