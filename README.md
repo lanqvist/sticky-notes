@@ -1,3 +1,7 @@
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
 The task was interesting for me, because i worked with this type of task for the first time.
 
 Since this is the first experience, I took React as a basis and decided to do everything on hooks.
@@ -10,7 +14,16 @@ Also, every time we create a note, we generate a random color, which is predeter
 All this is stored in local storage.
 
 There are problems that I ran into:
+
 - Moving the notes - calculating the current position
 - Synchronization of all our notes to local storage - a single note
 
-To create a note at a specified location, you can use ctrl+left click anywhere.
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+- npm
+  ```sh
+  npm install
+  npm run start
+  ```
