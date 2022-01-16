@@ -3,9 +3,9 @@ import { useLocalStorageForNotes } from "../../hooks/useLocalStorageForNotes";
 import { INotes } from "../../types";
 import Note from "../Note";
 
-import { getInitialNoteState } from "./utils";
-
 import plusIcon from "../../icons/plus.svg";
+
+import { getInitialNoteState } from "./utils";
 
 const StickyNotes: React.FC = () => {
   const [notes, setNotes] = useLocalStorageForNotes(getInitialNoteState());
@@ -25,7 +25,12 @@ const StickyNotes: React.FC = () => {
   return (
     <>
       <div>
-        <img src={plusIcon} alt="plus" onClick={onAddNote} />
+        <img
+          src={plusIcon}
+          alt="plus"
+          onClick={onAddNote}
+          className="plusIcon"
+        />
         {notes.map((note: INotes) => (
           <Note
             id={note.id}

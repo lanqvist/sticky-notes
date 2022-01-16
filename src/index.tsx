@@ -6,7 +6,6 @@ import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div>Sticky notes</div>
     <StickyNotes />
   </React.StrictMode>,
   document.getElementById("root")
