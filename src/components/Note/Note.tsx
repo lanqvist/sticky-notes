@@ -54,10 +54,14 @@ const Note: React.FC<IProps> = ({
 
   const onMouseMove = useCallback((event) => {
     if (isDragging.current) {
-      /* moving the note is done by calculating the movement of the cursor */
-      /* probably not the best solution. */
-      setPositionX((position) => position + event.movementX);
-      setPositionY((position) => position + event.movementY);
+      if (event.cancelable) {
+        event.preventDefault();
+        event.stopPropagation();
+        /* moving the note is done by calculating the movement of the cursor */
+        /* probably not the best solution. */
+        setPositionX((position) => position + event.movementX);
+        setPositionY((position) => position + event.movementY);
+      }
     }
   }, []);
 
