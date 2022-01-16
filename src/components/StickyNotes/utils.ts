@@ -7,12 +7,17 @@ export const getRandomIdNote = () =>
 export const getRandomKeyNote = () =>
   `@${Math.floor(Math.random() * 99999999)}`;
 
-export const getInitialNoteState = () => ({
-  id: getRandomIdNote(),
-  key: getRandomKeyNote(),
-  clientX: 0,
-  clientY: 0,
-  styles: {
-    background: AVAILABLE_COLORS[getRandomBackgroundForNotes()],
+export const getInitialNoteState = () => [
+  {
+    id: getRandomIdNote(),
+    key: getRandomKeyNote(),
+    text: "",
+    position: {
+      x: 0,
+      y: 0,
+    },
+    styles: {
+      background: AVAILABLE_COLORS[getRandomBackgroundForNotes()],
+    },
   },
-});
+];

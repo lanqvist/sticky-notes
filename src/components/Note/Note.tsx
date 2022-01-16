@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { IPosition } from "../../types";
+import { setNoteToLocalStorage } from "../../utils/setNoteToLocalStorage";
 
 import plusIcon from "../../icons/plus.svg";
 import trashIcon from "../../icons/trash.svg";
@@ -9,35 +12,34 @@ interface IProps {
   id: string;
   onAddNote?: () => void;
   onDeleteNote: (id: string) => void;
-  clientX: number;
-  clientY: number;
+  position: IPosition;
   styles?: React.CSSProperties;
+  text: string;
 }
 
 const Note: React.FC<IProps> = ({
-  clientX,
-  clientY,
   styles,
   id,
   onDeleteNote,
   onAddNote,
+  position,
+  text,
 }) => {
   const isDragging = useRef(false);
   const dragHeadRef = useRef<any>(null);
   const noteRef = useRef<any>(null);
 
-  const [positionX, setPositionX] = useState(clientX);
-  const [positionY, setPositionY] = useState(clientY);
+  const [noteText, setNoteText] = useState(text);
 
-  const [height, setHeight] = useState(200);
-  const [width, setWidth] = useState(200);
+  const [positionX, setPositionX] = useState(position.x);
+  const [positionY, setPositionY] = useState(position.y);
 
   const [zIndex, setZIndex] = useState<number | string>();
 
   const onMouseDown = useCallback((event) => {
     /* Сheck that the event is included in the ref, in order */
     /* to understand what exactly we will work with the correct note */
-    if (dragHeadRef.current && dragHeadRef.current.contains(event.target)) {
+    if (event.target === dragHeadRef.current) {
       isDragging.current = true;
 
       setZIndex(1000);
@@ -49,8 +51,13 @@ const Note: React.FC<IProps> = ({
       isDragging.current = false;
 
       setZIndex("auto");
+
+      setNoteToLocalStorage({
+        noteId: id,
+        position: { x: positionX, y: positionY },
+      });
     }
-  }, []);
+  }, [id, positionX, positionY]);
 
   const onMouseMove = useCallback((event) => {
     if (isDragging.current) {
@@ -65,32 +72,16 @@ const Note: React.FC<IProps> = ({
     }
   }, []);
 
-  const resizeObserver = useMemo(
-    () =>
-      new ResizeObserver((entries: any) => {
-        const contentReact = entries[0].contentRect;
-
-        setWidth(contentReact.width);
-        setHeight(contentReact.height);
-      }),
-    []
-  );
-
   useEffect(() => {
     document.addEventListener("mouseup", onMouseUp);
     document.addEventListener("mousedown", onMouseDown);
     document.addEventListener("mousemove", onMouseMove);
-
-    resizeObserver.observe(noteRef.current);
-
     return () => {
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("mousemove", onMouseMove);
-
-      resizeObserver.disconnect();
     };
-  }, [onMouseMove, onMouseDown, onMouseUp, resizeObserver]);
+  }, [onMouseMove, onMouseDown, onMouseUp]);
 
   return (
     <div>
@@ -99,8 +90,8 @@ const Note: React.FC<IProps> = ({
         ref={noteRef}
         style={{
           ...styles,
-          height,
-          width,
+          height: 220,
+          width: 220,
           transform: `translateX(${positionX}px) translateY(${positionY}px)`,
           zIndex,
         }}
@@ -123,7 +114,15 @@ const Note: React.FC<IProps> = ({
             <img src={trashIcon} alt="plus" />
           </div>
         </div>
-        <textarea className="textAreaNote" placeholder="Add your notes..." />
+        <textarea
+          value={noteText}
+          onChange={(event) => setNoteText(event.target.value)}
+          onBlur={(event) =>
+            setNoteToLocalStorage({ noteId: id, text: event.target.value })
+          }
+          className="textAreaNote"
+          placeholder="Add your notes..."
+        />
       </div>
     </div>
   );

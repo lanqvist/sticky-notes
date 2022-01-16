@@ -1,20 +1,14 @@
 import { useCallback } from "react";
 import { useLocalStorageForNotes } from "../../hooks/useLocalStorageForNotes";
+import { INotes } from "../../types";
 import Note from "../Note";
 
-import { AVAILABLE_COLORS } from "./const";
-import {
-  getInitialNoteState,
-  getRandomBackgroundForNotes,
-  getRandomIdNote,
-  getRandomKeyNote,
-} from "./utils";
+import { getInitialNoteState } from "./utils";
 
-import "./StickyNotes.css";
-import { INotes } from "../../types";
+import plusIcon from "../../icons/plus.svg";
 
 const StickyNotes: React.FC = () => {
-  const [notes, setNotes] = useLocalStorageForNotes("notes", [getInitialNoteState()]);
+  const [notes, setNotes] = useLocalStorageForNotes(getInitialNoteState());
 
   const onDeleteNote = useCallback(
     (id) => {
@@ -24,41 +18,22 @@ const StickyNotes: React.FC = () => {
   );
 
   const onAddNote = useCallback(
-    () => setNotes((notes: INotes[]) => [...notes, getInitialNoteState()]),
+    () => setNotes((notes: INotes[]) => [...notes, ...getInitialNoteState()]),
     [setNotes]
   );
 
-  const onMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (event.ctrlKey && event.button === 0) {
-      const clientX = event.clientX;
-      const clientY = event.clientY;
-
-      return setNotes((notes: INotes[]) => [
-        ...notes,
-        {
-          id: getRandomIdNote(),
-          key: getRandomKeyNote(),
-          clientX,
-          clientY,
-          styles: {
-            background: AVAILABLE_COLORS[getRandomBackgroundForNotes()],
-          },
-        },
-      ]);
-    }
-  };
-
   return (
     <>
-      <div onMouseDown={onMouseDown} className="stickyContainer">
+      <div>
+        <img src={plusIcon} alt="plus" onClick={onAddNote} />
         {notes.map((note: INotes) => (
           <Note
             id={note.id}
             key={note.key}
+            text={note.text}
+            position={note.position}
             onAddNote={onAddNote}
             onDeleteNote={onDeleteNote}
-            clientX={note.clientX}
-            clientY={note.clientY}
             styles={note.styles}
           />
         ))}

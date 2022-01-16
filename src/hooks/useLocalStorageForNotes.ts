@@ -1,14 +1,12 @@
 import { useState } from "react";
+import { LOCAL_STORAGE_NOTES_KEY } from "../constants";
 import { INotes } from "../types";
 
 /* store all our notes in local storage, but so far it only remembers the position at the initialization stage */
-export const useLocalStorageForNotes = (
-  key: string,
-  initialValue: INotes[]
-) => {
+export const useLocalStorageForNotes = (initialValue: INotes[]) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
-      const item = window.localStorage.getItem(key);
+      const item = window.localStorage.getItem(LOCAL_STORAGE_NOTES_KEY);
 
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
@@ -25,7 +23,10 @@ export const useLocalStorageForNotes = (
 
       setStoredValue(valueToStore);
 
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      window.localStorage.setItem(
+        LOCAL_STORAGE_NOTES_KEY,
+        JSON.stringify(valueToStore)
+      );
     } catch (error) {
       console.log(error);
     }

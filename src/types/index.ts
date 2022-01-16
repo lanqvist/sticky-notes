@@ -1,7 +1,12 @@
 export interface INotes {
   id: string;
   key: string;
-  clientX: number;
-  clientY: number;
+  text: string;
+  position: IPosition;
   styles: React.CSSProperties;
+}
+
+export interface IPosition {
+  x: number;
+  y: number;
 }
