@@ -12,5 +12,3 @@ All this is stored in local storage.
 There are problems that I ran into:
 - Moving the notes - calculating the current position
 - Synchronization of all our notes to local storage - a single note
-
-To create a note at a specified location, you can use ctrl+left click anywhere.
