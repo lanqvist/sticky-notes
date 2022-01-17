@@ -1,11 +1,13 @@
-import { useCallback } from "react";
-import { useLocalStorageForNotes } from "../../hooks/useLocalStorageForNotes";
 import { INotes } from "../../types";
 import Note from "../Note";
 
 import plusIcon from "../../icons/plus.svg";
 
 import { getInitialNoteState } from "./utils";
+import { useCallback } from "react";
+import { useLocalStorageForNotes } from "../../hooks/useLocalStorageForNotes";
+import { getNewNotesList } from "../../utils/getNewNotesList";
+import { ACTIONS_TYPE } from "../../constants";
 
 const StickyNotes: React.FC = () => {
   const [notes, setNotes] = useLocalStorageForNotes(getInitialNoteState());
@@ -19,6 +21,34 @@ const StickyNotes: React.FC = () => {
 
   const onAddNote = useCallback(
     () => setNotes((notes: INotes[]) => [...notes, ...getInitialNoteState()]),
+    [setNotes]
+  );
+
+  const onBlurText = useCallback(
+    (event, noteId) => {
+      setNotes((notes: INotes[]) =>
+        getNewNotesList({
+          actionType: ACTIONS_TYPE.setText,
+          text: event.target.value,
+          notes,
+          noteId,
+        })
+      );
+    },
+    [setNotes]
+  );
+
+  const onChangePosition = useCallback(
+    (noteId, x, y) => {
+      setNotes((notes: INotes[]) =>
+        getNewNotesList({
+          actionType: ACTIONS_TYPE.setPosition,
+          position: { x, y },
+          notes,
+          noteId,
+        })
+      );
+    },
     [setNotes]
   );
 
@@ -36,9 +66,11 @@ const StickyNotes: React.FC = () => {
             id={note.id}
             key={note.key}
             text={note.text}
-            position={note.position}
             onAddNote={onAddNote}
             onDeleteNote={onDeleteNote}
+            onBlurText={onBlurText}
+            onChangePosition={onChangePosition}
+            position={note.position}
             styles={note.styles}
           />
         ))}

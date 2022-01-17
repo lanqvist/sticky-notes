@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { IPosition } from "../../types";
-import { setNoteToLocalStorage } from "../../utils/setNoteToLocalStorage";
 
 import plusIcon from "../../icons/plus.svg";
 import trashIcon from "../../icons/trash.svg";
@@ -12,6 +11,11 @@ interface IProps {
   id: string;
   onAddNote?: () => void;
   onDeleteNote: (id: string) => void;
+  onBlurText: (
+    event: React.FocusEvent<HTMLTextAreaElement, Element>,
+    noteId: string
+  ) => void;
+  onChangePosition: (noteId: string, x: number, y: number) => void;
   position: IPosition;
   styles?: React.CSSProperties;
   text: string;
@@ -20,8 +24,10 @@ interface IProps {
 const Note: React.FC<IProps> = ({
   styles,
   id,
-  onDeleteNote,
   onAddNote,
+  onDeleteNote,
+  onBlurText,
+  onChangePosition,
   position,
   text,
 }) => {
@@ -52,12 +58,9 @@ const Note: React.FC<IProps> = ({
 
       setZIndex("auto");
 
-      setNoteToLocalStorage({
-        noteId: id,
-        position: { x: positionX, y: positionY },
-      });
+      onChangePosition(id, positionX, positionY);
     }
-  }, [id, positionX, positionY]);
+  }, [id, onChangePosition, positionX, positionY]);
 
   const onMouseMove = useCallback((event) => {
     if (isDragging.current) {
@@ -118,9 +121,7 @@ const Note: React.FC<IProps> = ({
         <textarea
           value={noteText}
           onChange={(event) => setNoteText(event.target.value)}
-          onBlur={(event) =>
-            setNoteToLocalStorage({ noteId: id, text: event.target.value })
-          }
+          onBlur={(event) => onBlurText(event, id)}
           className="textAreaNote"
           placeholder="Add your notes..."
         />

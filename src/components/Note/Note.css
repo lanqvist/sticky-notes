@@ -44,7 +44,7 @@
   outline: none;
   background: none;
   padding: 10px;
-  overflow: hidden;
+  font-size: 14px;
 }
 
 ::placeholder {

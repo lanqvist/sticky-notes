@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getInitialNoteState } from "../components/StickyNotes/utils";
 import { LOCAL_STORAGE_NOTES_KEY } from "../constants";
 import { INotes } from "../types";
 
@@ -6,9 +7,18 @@ import { INotes } from "../types";
 export const useLocalStorageForNotes = (initialValue: INotes[]) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
-      const item = window.localStorage.getItem(LOCAL_STORAGE_NOTES_KEY);
+      const notes = window.localStorage.getItem(LOCAL_STORAGE_NOTES_KEY);
+      /* set initial value to LC */
+      if (notes) {
+        return JSON.parse(notes);
+      }
 
-      return item ? JSON.parse(item) : initialValue;
+      window.localStorage.setItem(
+        LOCAL_STORAGE_NOTES_KEY,
+        JSON.stringify(getInitialNoteState())
+      );
+
+      return initialValue;
     } catch (error) {
       console.log(error);
 
